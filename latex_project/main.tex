@@ -26,12 +26,12 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{url}
-\usepackage{hyperref}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{balance}
 \usepackage{microtype}
-
+%% hyperref MUST come after algorithm/algpseudocode for IEEEtran
+\usepackage{hyperref}
 \hypersetup{
   colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue,
   pdftitle={Empirical Limits and Fusion Insights for Flow-Metadata Anomaly Detection},
@@ -57,10 +57,10 @@
   A Study Using Benford Statistics, Temporal Drift,
   Isolation Forest, and Graph Evidence}
 
-\author{Anuprita~S.~Korde,~\IEEEmembership{Member,~IEEE}%
+\author{Anuprita~S.~Korde,%
   \thanks{A.~S.~Korde is with the Department of Computer Science
     and Engineering.
-    E-mail: \texttt{sagarkorde04@gmail.com}.
+    E-mail: sagarkorde04@gmail.com.
     Code and supplementary material:
     \url{https://github.com/sagarkorde04/HBG-NIDS-TNSM}}}
 
@@ -68,6 +68,7 @@
 {Korde: Empirical Limits for Flow-Metadata Anomaly Detection}
 
 \maketitle
+\IEEEpeerreviewmaketitle
 
 %% ---- Abstract ----------------------------------------------
 \begin{abstract}
