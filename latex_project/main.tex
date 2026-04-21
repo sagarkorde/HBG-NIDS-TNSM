@@ -814,7 +814,7 @@ $\ge5$ flows & 192.168.10.3, .50, .14 & Yes \\
 \end{tabular}
 \end{table}
 
-\begin{table*}[t]
+\begin{table*}[!t]
 \caption{PageRank vs.\ Flow-Volume Host Ranking (top~10).
   Agreement in 7/10 positions. Divergence at ranks 8--10 only.
   Conclusion: simple flow counting is equivalent for top-7 victim
@@ -846,7 +846,7 @@ $\ge5$ flows & 192.168.10.3, .50, .14 & Yes \\
 
 \subsection{Window Construct Validity}
 
-\begin{table}[t]
+\begin{table}[!t]
 \caption{Attack-flow \% in TP/FN windows.}
 \label{tab:validity}
 \centering\small
@@ -892,7 +892,7 @@ FP ($n{=}39$) &  0\% &  0\% &  0\% & Genuinely benign windows \\
 
 \subsection{Summary of Six Empirical Findings}
 
-\begin{table}[t]
+\begin{table}[!t]
 \caption{Summary of six empirical findings.}
 \label{tab:findings}
 \centering\small
@@ -1018,6 +1018,8 @@ Code and supplementary material available at:
 \url{https://github.com/sagarkorde04/HBG-NIDS-TNSM}.
 
 %% ---- References -----------------------------------------------
+%% \clearpage flushes ALL pending floats so no table bleeds into references.
+\clearpage
 \balance
 \bibliographystyle{IEEEtran}
 \bibliography{references}
