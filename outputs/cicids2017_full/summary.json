@@ -1,0 +1,202 @@
+{
+  "threshold": 1.4320653746191059,
+  "window_count": 171,
+  "alert_count": 81,
+  "attack_window_count": 58,
+  "precision": 0.48148148148148145,
+  "recall": 0.6724137931034483,
+  "f1": 0.5611510791366906,
+  "roc_auc": 0.7220018309429357,
+  "per_file": [
+    {
+      "source_file": "Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+      "windows": 7,
+      "alerts": 7,
+      "attack_windows": 3,
+      "avg_final_score": 52.251043647594486
+    },
+    {
+      "source_file": "Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv",
+      "windows": 10,
+      "alerts": 10,
+      "attack_windows": 7,
+      "avg_final_score": 36.086285359746334
+    },
+    {
+      "source_file": "Friday-WorkingHours-Morning.pcap_ISCX.csv",
+      "windows": 17,
+      "alerts": 17,
+      "attack_windows": 13,
+      "avg_final_score": 43.739279990270525
+    },
+    {
+      "source_file": "Monday-WorkingHours.pcap_ISCX.csv",
+      "windows": 34,
+      "alerts": 2,
+      "attack_windows": 0,
+      "avg_final_score": 0.3663847089633365
+    },
+    {
+      "source_file": "Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv",
+      "windows": 17,
+      "alerts": 17,
+      "attack_windows": 6,
+      "avg_final_score": 16.469573868821477
+    },
+    {
+      "source_file": "Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv",
+      "windows": 17,
+      "alerts": 17,
+      "attack_windows": 6,
+      "avg_final_score": 15.797902433509948
+    },
+    {
+      "source_file": "Tuesday-WorkingHours.pcap_ISCX.csv",
+      "windows": 34,
+      "alerts": 1,
+      "attack_windows": 11,
+      "avg_final_score": 0.21420495730531944
+    },
+    {
+      "source_file": "Wednesday-workingHours.pcap_ISCX.csv",
+      "windows": 35,
+      "alerts": 10,
+      "attack_windows": 12,
+      "avg_final_score": 5.887704495312519
+    }
+  ],
+  "top_alert_hosts": [
+    {
+      "host": "192.168.10.3",
+      "alert_windows": 81,
+      "mean_node_score": 0.032566323254739855,
+      "max_node_score": 0.47982452761282757
+    },
+    {
+      "host": "192.168.10.50",
+      "alert_windows": 81,
+      "mean_node_score": 0.041323709731224234,
+      "max_node_score": 0.42017547238717234
+    },
+    {
+      "host": "192.168.10.14",
+      "alert_windows": 80,
+      "mean_node_score": 0.05806310550937181,
+      "max_node_score": 0.2703853155873192
+    },
+    {
+      "host": "192.168.10.5",
+      "alert_windows": 79,
+      "mean_node_score": 0.05577702340115142,
+      "max_node_score": 0.2900759412335841
+    },
+    {
+      "host": "192.168.10.9",
+      "alert_windows": 79,
+      "mean_node_score": 0.057319819435190295,
+      "max_node_score": 0.17646875034273202
+    },
+    {
+      "host": "192.168.10.17",
+      "alert_windows": 79,
+      "mean_node_score": 0.04434431127870684,
+      "max_node_score": 0.17416755876689397
+    },
+    {
+      "host": "192.168.10.12",
+      "alert_windows": 79,
+      "mean_node_score": 0.03769029148638378,
+      "max_node_score": 0.11852909670434557
+    },
+    {
+      "host": "192.168.10.255",
+      "alert_windows": 79,
+      "mean_node_score": 0.0031294895192388603,
+      "max_node_score": 0.048110161204174225
+    },
+    {
+      "host": "8.0.6.4",
+      "alert_windows": 79,
+      "mean_node_score": 0.0004333016100299515,
+      "max_node_score": 0.022988489340489915
+    },
+    {
+      "host": "8.6.0.1",
+      "alert_windows": 79,
+      "mean_node_score": 0.0004333016100299515,
+      "max_node_score": 0.022988489340489915
+    }
+  ],
+  "top_alert_edges": [
+    {
+      "source_ip": "192.168.10.14",
+      "destination_ip": "192.168.10.3",
+      "alert_windows": 79,
+      "mean_edge_score": 0.021188304826739182,
+      "max_edge_score": 0.11525823821481399
+    },
+    {
+      "source_ip": "192.168.10.3",
+      "destination_ip": "192.168.10.1",
+      "alert_windows": 79,
+      "mean_edge_score": 0.036139541313312304,
+      "max_edge_score": 0.05308904277960177
+    },
+    {
+      "source_ip": "8.6.0.1",
+      "destination_ip": "8.0.6.4",
+      "alert_windows": 79,
+      "mean_edge_score": 0.0008520749602337269,
+      "max_edge_score": 0.04856321346881364
+    },
+    {
+      "source_ip": "192.168.10.17",
+      "destination_ip": "192.168.10.255",
+      "alert_windows": 79,
+      "mean_edge_score": 0.00740900396690987,
+      "max_edge_score": 0.027369635765752732
+    },
+    {
+      "source_ip": "192.168.10.12",
+      "destination_ip": "192.168.10.3",
+      "alert_windows": 78,
+      "mean_edge_score": 0.017377009291988568,
+      "max_edge_score": 0.1847569468337546
+    },
+    {
+      "source_ip": "192.168.10.9",
+      "destination_ip": "192.168.10.3",
+      "alert_windows": 78,
+      "mean_edge_score": 0.022064126230626854,
+      "max_edge_score": 0.1347770429656057
+    },
+    {
+      "source_ip": "192.168.10.15",
+      "destination_ip": "192.168.10.3",
+      "alert_windows": 78,
+      "mean_edge_score": 0.029643056471441172,
+      "max_edge_score": 0.10220429483127492
+    },
+    {
+      "source_ip": "192.168.10.17",
+      "destination_ip": "192.168.10.3",
+      "alert_windows": 78,
+      "mean_edge_score": 0.01737356427220227,
+      "max_edge_score": 0.09937351487143527
+    },
+    {
+      "source_ip": "192.168.10.8",
+      "destination_ip": "192.168.10.3",
+      "alert_windows": 78,
+      "mean_edge_score": 0.019668557984725214,
+      "max_edge_score": 0.08078175429025986
+    },
+    {
+      "source_ip": "192.168.10.51",
+      "destination_ip": "192.168.10.3",
+      "alert_windows": 78,
+      "mean_edge_score": 0.008919709467635097,
+      "max_edge_score": 0.07938467849353743
+    }
+  ]
+}
