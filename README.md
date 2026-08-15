@@ -54,20 +54,19 @@ bootstrap 95% CI [1.28, 1.61].
 
 ```
 HBG-NIDS-TNSM/
-├── latex_project/
-│   ├── main.tex              ← IEEE TNSM LaTeX source (IEEEtran format)
-│   ├── references.bib        ← BibTeX for all 36 references
-│   ├── references_APA.md     ← All 36 references in APA 7th edition
-│   ├── Makefile              ← Build: make → pdflatex+bibtex+pdflatex×2
-│   └── figures/              ← Place figure PDFs here (see README)
-├── build_paper_v6.py         ← Python (python-docx) DOCX builder — v6
-├── build_paper_v5.py         ← Previous version for reference
-├── IEEE_TNSM_Paper_Improved_v6.docx   ← Final DOCX (v6, 8.8/10)
+├── generate_manuscript_v7.py ← Python (python-docx) DOCX builder — current/final
+├── generate_manuscript_v6.py ← Previous draft, kept for reference
+├── generate_manuscript_v5.py ← Earlier draft, kept for reference
 ├── outputs/
 │   └── cicids2017_full/
 │       └── summary.json      ← Detection results summary
+├── LICENSE
 └── README.md
 ```
+
+> The LaTeX build (`latex_project/`) and the generated `.docx` drafts have been
+> removed from version control as build artifacts / superseded scrap; regenerate
+> a DOCX at any time with `generate_manuscript_v7.py` below.
 
 ---
 
@@ -93,31 +92,19 @@ Graph:               PageRank + Betweenness on internal IPs → post-hoc
 
 ---
 
-## Compiling the LaTeX Paper
-
-```bash
-# Requirements: TeX Live 2022+ or MiKTeX 22+
-cd latex_project
-make          # full build
-make quick    # draft (single pass)
-make clean    # remove aux files
-```
-
-**Figures:** Place PDF/PNG files in `latex_project/figures/` matching the filenames
-listed in `README.md` in the latex_project directory.
-
----
-
 ## Generating the DOCX
 
 ```bash
 # Windows
-"C:/Program Files/Python310/python.exe" build_paper_v6.py
+"C:/Program Files/Python310/python.exe" generate_manuscript_v7.py
 # Linux/Mac
-python3 build_paper_v6.py
+python3 generate_manuscript_v7.py
 ```
 
 Requires: `python-docx` (`pip install python-docx`)
+
+`generate_manuscript_v6.py` and `generate_manuscript_v5.py` are earlier drafts,
+kept for reference only — `generate_manuscript_v7.py` is the current version.
 
 ---
 
