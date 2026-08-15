@@ -1,52 +1,13 @@
-# HBG-NIDS: Empirical Limits and Fusion Insights for Flow-Metadata Anomaly Detection
+# HBG-NIDS: Hybrid Benford-Graph Network Intrusion Detection
 
-[![IEEE TNSM](https://img.shields.io/badge/Journal-IEEE%20TNSM-blue)](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=4275028)
-[![Status](https://img.shields.io/badge/Status-Under%20Review-orange)]()
-[![Rating](https://img.shields.io/badge/Reviewer%20Rating-8.8%2F10-brightgreen)]()
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+Reproducibility code for the paper *"Robust Unsupervised Anomaly Detection in
+Encrypted Network Flows via Multi-Layer Score Fusion and Adaptive Extreme Value
+Thresholding."* The framework fuses Benford's Law divergence, EWMA/CUSUM temporal
+drift, and Isolation Forest into a single unsupervised detection score, with a
+post-hoc graph module for victim-host identification.
 
-> **Paper:** Empirical Limits and Fusion Insights for Flow-Metadata Anomaly Detection
-> in Encrypted Networks: A Study Using Benford Statistics, Temporal Drift, Isolation
-> Forest, and Graph Evidence
->
-> **Author:** Anuprita S. Korde · Department of Computer Science and Engineering
->
-> **Target Journal:** IEEE Transactions on Network and Service Management
->
-> **Reviewer Verdict:** 8.8/10 — Accept as Is
-
----
-
-## Overview
-
-This repository contains the complete source for an empirical research paper studying
-**what flow-metadata anomaly detectors can and cannot detect** in encrypted networks,
-using CICIDS2017 under a strictly unsupervised protocol.
-
-The primary contributions are **six reproducible empirical findings (F1–F6)**:
-
-| Finding | Summary |
-|---------|---------|
-| **F1** | Benford conformity limited to 5/11 features (mean r=0.618); evidence is reinforcing, not independent |
-| **F2** | Monday-only baseline → ~86% Thursday FP; minimum viable baseline = 5–7 days |
-| **F3** | Graph layer adds no significant F1 gain (p=0.19); demoted to post-hoc victim identification |
-| **F4** | 3-layer hybrid (F1=0.552) significantly outperforms best-tuned IF (F1=0.451, p=0.018) |
-| **F5** | XSS/SQLi leave no detectable flow-metadata signature at 15-min granularity |
-| **F6** | Static thresholding fragile: CI width 23%; recall varies 0.104 across CI bounds |
-
----
-
-## Key Results
-
-| Method | Regime | F1 | ROC-AUC |
-|--------|--------|----|---------|
-| **3-Layer HBG-NIDS (recommended)** | Unsupervised | **0.552** | **0.714** |
-| Autoencoder (B4) | Unsupervised | 0.498 | 0.671 |
-| IF best-tuned (B2) | Unsupervised | 0.451 | 0.648 |
-| Benford-only (B1) | Unsupervised | 0.423 | 0.608 |
-
-Dataset: CICIDS2017 — 171 windows, 58 attack windows, threshold θ=1.432,
-bootstrap 95% CI [1.28, 1.61].
+This repository intentionally contains only the source code behind the paper's
+results — no drafts, no build scripts, no generated outputs.
 
 ---
 
@@ -54,84 +15,130 @@ bootstrap 95% CI [1.28, 1.61].
 
 ```
 HBG-NIDS-TNSM/
-├── generate_manuscript_v7.py ← Python (python-docx) DOCX builder — current/final
-├── generate_manuscript_v6.py ← Previous draft, kept for reference
-├── generate_manuscript_v5.py ← Earlier draft, kept for reference
-├── outputs/
-│   └── cicids2017_full/
-│       └── summary.json      ← Detection results summary
+├── src/hybrid_nids/          ← Importable package: the full detection pipeline
+│   ├── __init__.py           ← Exposes HybridBenfordPipeline and PipelineConfig
+│   ├── config.py             ← PipelineConfig: window size, feature list, weights
+│   ├── data.py                ← CICFlowMeter CSV loading and windowing
+│   ├── benford.py             ← Benford's Law divergence metrics (MAD, KS, chi-square, entropy)
+│   ├── temporal.py            ← EWMA and CUSUM temporal drift statistics
+│   ├── modeling.py            ← Isolation Forest fitting and scoring
+│   ├── graphing.py            ← Per-window host/edge graph feature extraction (PageRank, betweenness)
+│   ├── pipeline.py            ← HybridBenfordPipeline: orchestrates all layers, fuses scores, evaluates
+│   └── visualization.py       ← Post-hoc graph rendering (NetworkX/PyVis/Gravis) and ranked-alert charts
+├── scripts/                   ← Standalone modules verifying individual paper findings
+│   ├── rolling_baseline.py    ← WeekdayBaselineModel + simulation for Finding F2 (baseline drift)
+│   ├── evt_thresholding.py    ← SPOT/DSPOT adaptive thresholding for Finding F6 (threshold fragility)
+│   └── feature_decorrelation.py ← PCA-based Benford decorrelation for Finding F1 (feature redundancy)
 ├── LICENSE
 └── README.md
 ```
 
-> The LaTeX build (`latex_project/`) and the generated `.docx` drafts have been
-> removed from version control as build artifacts / superseded scrap; regenerate
-> a DOCX at any time with `generate_manuscript_v7.py` below.
+---
+
+## What Each Module Does
+
+**`src/hybrid_nids/` (the detection pipeline)**
+
+- `config.py` — `PipelineConfig` dataclass: dataset paths, 15-minute window rule,
+  the 10 candidate Benford features, Isolation Forest contamination, and the
+  layer fusion weights.
+- `data.py` — Reads raw CICFlowMeter CSVs, coerces types, derives `total_bytes`/
+  `total_packets`/`is_attack`, and floors timestamps into fixed-width windows.
+- `benford.py` — Computes first- and second-digit Benford conformity per window
+  (MAD, Kolmogorov–Smirnov, chi-square, Euclidean distance, Shannon entropy gap).
+- `temporal.py` — EWMA and two-sided CUSUM statistics over the windowed Benford
+  divergence score, used to flag temporal drift.
+- `modeling.py` — Fits an `IsolationForest` on the benign training partition and
+  scores every window.
+- `graphing.py` — Builds a per-window directed host graph from flow records and
+  extracts topology features (density, PageRank, betweenness, top host/edge).
+- `pipeline.py` — `HybridBenfordPipeline`: runs the full five-phase procedure
+  (feature screening → baseline training → weighted score fusion → thresholded
+  alerting → per-window CSV/JSON/figure export), and computes precision/recall/
+  F1/ROC-AUC against window-level labels.
+- `visualization.py` — Loads pipeline outputs and renders the post-hoc graph
+  evidence (static NetworkX PNG/SVG, interactive PyVis/Gravis HTML) plus ranked
+  top-alerted-host/edge bar charts.
+
+**`scripts/` (finding-verification modules)**
+
+- `rolling_baseline.py` — Implements the `WeekdayBaselineModel` described in the
+  paper and a Monday-vs-weekday-adaptive drift simulation, reproducing the
+  Thursday false-positive reduction reported for Finding F2.
+- `evt_thresholding.py` — Implements `SPOTDetector` and `DSPOTDetector`
+  (Streaming/Drift Peak-Over-Threshold, Generalized Pareto Distribution fitting)
+  used to derive the adaptive alert threshold discussed under Finding F6.
+- `feature_decorrelation.py` — Implements `DecorrelatedBenfordDetector`, a
+  PCA-based projection that decorrelates the Benford-conformant feature set,
+  reproducing the correlation-matrix results behind Finding F1.
 
 ---
 
-## Framework Architecture
+## Running the Pipeline
 
-```
-                   ┌─────────────────────────────────────────────┐
-Flow Records F     │        3-LAYER DETECTION SCORE               │
-──────────────►    │  S_det = 0.42·S_stat + 0.25·S_temp + 0.33·S_IF  │
-                   └──────────────┬──────────────────────────────┘
-                                  │ S_det ≥ θ → ALERT
-                                  ▼
-                   ┌─────────────────────────────┐
-                   │  POST-HOC GRAPH EVIDENCE     │  ← NOT in S_det
-                   │  (victim ID for NOC)         │
-                   └─────────────────────────────┘
+```python
+from pathlib import Path
+from hybrid_nids import HybridBenfordPipeline, PipelineConfig
 
-Layer 1 — Benford:   KS screening → 5/11 features → multi-metric deviation
-Layer 2 — Temporal:  EWMA (α=0.30) + CUSUM (k=0.50) → drift detection
-Layer 3 — IF:        IsolationForest (300 est, seed=42) + SHAP explanation
-Graph:               PageRank + Betweenness on internal IPs → post-hoc
+config = PipelineConfig(
+    dataset_dir=Path("data/raw/cicids2017/GeneratedLabelledFlows/TrafficLabelling"),
+    output_dir=Path("outputs/cicids2017"),
+)
+pipeline = HybridBenfordPipeline(config)
+results = pipeline.run()
+print(results["summary"])
 ```
 
----
+This expects the CICIDS2017 CSVs (from the Canadian Institute for Cybersecurity:
+https://www.unb.ca/cic/datasets/ids-2017.html) laid out under `dataset_dir`.
+`pipeline.run()` writes `window_scores.csv`, `alerts.csv`, `host_scores.csv`,
+`edge_scores.csv`, `summary.json`, and a final-score time series figure to
+`output_dir`.
 
-## Generating the DOCX
+To render the post-hoc graph evidence and ranked-alert charts after a run:
+
+```python
+from pathlib import Path
+from hybrid_nids.visualization import render_visualization_bundle
+
+render_visualization_bundle(output_dir=Path("outputs/cicids2017"))
+```
+
+To reproduce the standalone finding simulations:
 
 ```bash
-# Windows
-"C:/Program Files/Python310/python.exe" generate_manuscript_v7.py
-# Linux/Mac
-python3 generate_manuscript_v7.py
+python scripts/rolling_baseline.py        # Finding F2
+python scripts/evt_thresholding.py        # Finding F6 (import SPOTDetector/DSPOTDetector directly)
+python scripts/feature_decorrelation.py   # Finding F1
 ```
 
-Requires: `python-docx` (`pip install python-docx`)
+---
 
-`generate_manuscript_v6.py` and `generate_manuscript_v5.py` are earlier drafts,
-kept for reference only — `generate_manuscript_v7.py` is the current version.
+## Requirements
+
+```
+numpy
+pandas
+scikit-learn
+scipy
+networkx
+matplotlib
+pyvis
+gravis
+```
+
+Python 3.10+ recommended (uses `from __future__ import annotations` and
+`dataclass(slots=True)`).
 
 ---
 
 ## Dataset
 
 CICIDS2017 is available from the Canadian Institute for Cybersecurity:
-https://www.unb.ca/cic/datasets/ids-2017.html
-
----
-
-## Citation
-
-```bibtex
-@article{korde2024hbgnids,
-  author  = {Korde, Anuprita S.},
-  title   = {{Empirical Limits and Fusion Insights for Flow-Metadata
-              Anomaly Detection in Encrypted Networks}},
-  journal = {{IEEE Transactions on Network and Service Management}},
-  year    = {2024},
-  note    = {Under review},
-  url     = {https://github.com/sagarkorde04/HBG-NIDS-TNSM}
-}
-```
+https://www.unb.ca/cic/datasets/ids-2017.html — subject to their usage terms.
 
 ---
 
 ## License
 
 MIT License — see [LICENSE](LICENSE) for details.
-Dataset (CICIDS2017) is subject to University of New Brunswick usage terms.
