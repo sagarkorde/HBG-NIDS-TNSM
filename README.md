@@ -1,13 +1,21 @@
-# HBG-NIDS: Hybrid Benford-Graph Network Intrusion Detection
+# HBG-NIDS: Benford Window Context for Unsupervised Flow-Based NIDS
 
-Reproducibility code for the paper *"Robust Unsupervised Anomaly Detection in
-Encrypted Network Flows via Multi-Layer Score Fusion and Adaptive Extreme Value
-Thresholding."* The framework fuses Benford's Law divergence, EWMA/CUSUM temporal
-drift, and Isolation Forest into a single unsupervised detection score, with a
-post-hoc graph module for victim-host identification.
+Reproducibility code for the paper *"Unsupervised Anomaly Detection in Encrypted
+Network Flows via Benford Window Context and Score Fusion"* (ICMLDE 2026, Paper ID 1388,
+revised version).
 
-This repository intentionally contains only the source code behind the paper's
-results — no drafts, no build scripts, no generated outputs.
+The revised paper treats a one-minute Benford's-law divergence over flow features as a
+plug-in context score that is fused with any unsupervised flow detector (Isolation Forest,
+KitNET, autoencoder, OCSVM, LOF, HBOS). All experiments use the corrected CIC-IDS-2017 and
+CSE-CIC-IDS-2018 releases of Liu et al. (IEEE CNS 2022).
+
+| Folder | Contents |
+|---|---|
+| [`revision/`](revision/) | **Code, per-run results and figures behind every number in the revised paper** (start here) |
+| `src/hybrid_nids/`, `scripts/` | Original-submission pipeline (15-min windows; Benford + EWMA/CUSUM + IF + graph). Kept for reference; the revision shows that the temporal and graph layers do not improve detection on corrected labels. |
+
+Note: `scripts/rolling_baseline.py` runs a **simulation**, not an experiment on CIC-IDS-2017
+(the dataset covers a single week), and its result is not used in the revised paper.
 
 ---
 
@@ -35,7 +43,7 @@ HBG-NIDS-TNSM/
 
 ---
 
-## What Each Module Does
+## Original-submission pipeline: what each module does
 
 **`src/hybrid_nids/` (the detection pipeline)**
 
