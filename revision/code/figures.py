@@ -10,8 +10,8 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).parent))
 from attnames import ATT
 
-R = Path("/home/claude/results")
-OUT = Path("/home/claude/build/fig"); OUT.mkdir(parents=True, exist_ok=True)
+R = Path(__file__).resolve().parent.parent / "results"
+OUT = Path(__file__).resolve().parent.parent / "figures"; OUT.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({"font.family": "serif", "font.size": 8, "axes.spines.top": False, "axes.spines.right": False})
 DETS = ["IF", "KitNET", "AE", "OCSVM", "LOF", "HBOS"]
 C_BASE, C_B, C_BT = "#9aa5b1", "#1f5aa6", "#d98c2b"
